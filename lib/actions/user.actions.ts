@@ -4,6 +4,7 @@ import { ID, Query } from "node-appwrite";
 import { createAdminClient } from "../appwrite";
 import { appwriteConfig } from "../appwrite/config";
 import { parseStringify } from "../utils";
+import { cookies } from "next/headers";
 
 async function getUserByEmail(email: string) {
   const { tables } = await createAdminClient();
@@ -22,7 +23,7 @@ const handleError = (error: unknown, message: string) => {
   throw error;
 };
 
-async function sendEmailOTP({ email }: { email: string }) {
+export async function sendEmailOTP({ email }: { email: string }) {
   const { account } = await createAdminClient();
   try {
     const session = await account.createEmailToken({
@@ -58,4 +59,18 @@ export async function createAccount(fullName: string, email: string) {
   }
 
   return parseStringify({ accountId });
+}
+
+export async function verifySecret({accountId, password}: {accountId: string, password: string}) {
+  try{
+    const { account } = await createAdminClient();
+    const session = await account.createSession({userId: accountId, secret: password});
+
+    (await cookies()).set('appwrite-session', session.secret, {path: '/', httpOnly: true, sameSite: 'strict', secure: true})
+
+    return parseStringify({sessionId: session.$id})
+
+  } catch (error) {
+    handleError(error, "Failed to verify OTP")
+  }
 }
