@@ -13,7 +13,7 @@ interface Props {
 }
 
 export default function Sidebar({fullName, avatar, email}: Props) {
-  const pathname = usePathname();
+  const pathName = usePathname();
   return (
     <aside className="sidebar">
       <Link href="/">
@@ -40,7 +40,7 @@ export default function Sidebar({fullName, avatar, email}: Props) {
               <li
                 className={cn(
                   "sidebar-nav-item",
-                  pathname === url && "shad-active"
+                  pathName === url && "shad-active"
                 )}
               >
                 <Image
@@ -50,7 +50,7 @@ export default function Sidebar({fullName, avatar, email}: Props) {
                   height={24}
                   className={cn(
                     "nav-icon",
-                    pathname === url && "nav-icon-active"
+                    pathName === url && "nav-icon-active"
                   )}
                 />
                 <p className="hidden lg:block">{name}</p>
