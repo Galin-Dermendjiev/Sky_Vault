@@ -1,7 +1,7 @@
 "use server";
 
 import { ID, Query } from "node-appwrite";
-import { createAdminClient } from "../appwrite";
+import { createAdminClient, createSessionClient } from "../appwrite";
 import { appwriteConfig } from "../appwrite/config";
 import { parseStringify } from "../utils";
 import { cookies } from "next/headers";
@@ -13,7 +13,7 @@ async function getUserByEmail(email: string) {
   const result = await tables.listRows({
     databaseId: appwriteConfig.databaseId,
     tableId: appwriteConfig.userTableId,
-    queries: [Query.equal("email", [email])]
+    queries: [Query.equal("email", [email])],
   });
 
   return result.total > 0 ? result.rows[0] : null;
@@ -52,8 +52,7 @@ export async function createAccount(fullName: string, email: string) {
       data: {
         fullName,
         email,
-        avatar:
-          avatarPlaceholderUrl,
+        avatar: avatarPlaceholderUrl,
         accountId,
       },
     });
@@ -62,16 +61,44 @@ export async function createAccount(fullName: string, email: string) {
   return parseStringify({ accountId });
 }
 
-export async function verifySecret({accountId, password}: {accountId: string, password: string}) {
-  try{
+export async function verifySecret({
+  accountId,
+  password,
+}: {
+  accountId: string;
+  password: string;
+}) {
+  try {
     const { account } = await createAdminClient();
-    const session = await account.createSession({userId: accountId, secret: password});
+    const session = await account.createSession({
+      userId: accountId,
+      secret: password,
+    });
 
-    (await cookies()).set('appwrite-session', session.secret, {path: '/', httpOnly: true, sameSite: 'strict', secure: true})
+    (await cookies()).set("appwrite-session", session.secret, {
+      path: "/",
+      httpOnly: true,
+      sameSite: "strict",
+      secure: true,
+    });
 
-    return parseStringify({sessionId: session.$id})
-
+    return parseStringify({ sessionId: session.$id });
   } catch (error) {
-    handleError(error, "Failed to verify OTP")
+    handleError(error, "Failed to verify OTP");
   }
+}
+
+export async function getCurrentUser() {
+  const { tables, account } = await createSessionClient();
+  const result = await account.get();
+
+  const user = await tables.listRows({
+    databaseId: appwriteConfig.databaseId,
+    tableId: appwriteConfig.userTableId,
+    queries: [Query.equal("accountId", result.$id)],
+  });
+
+  if(user.total < 0) return null
+  
+  return parseStringify(user.rows[0])
 }
