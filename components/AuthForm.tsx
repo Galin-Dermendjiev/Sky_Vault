@@ -16,7 +16,7 @@ import { Input } from "@/components/ui/input";
 import { useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
-import { createAccount } from "@/lib/actions/user.actions";
+import { createAccount, signInUser } from "@/lib/actions/user.actions";
 import OTPModal from "./OTPModal";
 
 type FormType = "sign-in" | "sign-up";
@@ -34,7 +34,7 @@ const authFormSchema = (formType: FormType) => {
 export default function AuthForm({ type }: { type: FormType }) {
   const [isLoading, setIsLoading] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
-  const [accountId, setAccountId] = useState(null)
+  const [accountId, setAccountId] = useState(null);
 
   const formSchema = authFormSchema(type);
   const form = useForm<z.infer<typeof formSchema>>({
@@ -46,17 +46,19 @@ export default function AuthForm({ type }: { type: FormType }) {
   });
 
   async function onSubmit(values: z.infer<typeof formSchema>) {
-    setIsLoading(true)
-    setErrorMessage('')
-    try{
-        const user = await createAccount(values.fullName || '', values.email)
-        setAccountId(user.accountId)
+    setIsLoading(true);
+    setErrorMessage("");
+    try {
+      const user =
+        type === "sign-up"
+          ? await createAccount(values.fullName || "", values.email)
+          : await signInUser({ email: values.email });
+      setAccountId(user.accountId);
     } catch {
-        setErrorMessage("Failed to create an account. Please try again.")
-    } finally{
-        setIsLoading(false)
+      setErrorMessage("Failed to create an account. Please try again.");
+    } finally {
+      setIsLoading(false);
     }
-
   }
 
   return (
@@ -143,7 +145,9 @@ export default function AuthForm({ type }: { type: FormType }) {
         </form>
       </Form>
 
-      {accountId && <OTPModal email={form.getValues('email')} accountId={accountId}/>}
+      {accountId && (
+        <OTPModal email={form.getValues("email")} accountId={accountId} />
+      )}
     </>
   );
 }
