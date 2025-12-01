@@ -2,10 +2,14 @@ import Header from "@/components/Header";
 import MobileNavigation from "@/components/MobileNavigation";
 import Sidebar from "@/components/Sidebar";
 import { getCurrentUser } from "@/lib/actions/user.actions";
+import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
 import { Toaster } from "sonner";
 
 export default async function Layout({ children }: { children: React.ReactNode }) {
+  const cookieStore = await cookies();
+  const session = cookieStore.get("appwrite-session");
+  if (!session) return redirect("/sign-in");
 
   const currentUser = await getCurrentUser()
   if(!currentUser) return redirect('/sign-in')
