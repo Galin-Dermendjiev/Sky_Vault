@@ -179,6 +179,13 @@
   .shad-select-item {
     @apply cursor-pointer ;
   }
+
+  .nav-icon {
+    @apply w-6 filter invert opacity-40;
+  }
+  .nav-icon-active {
+    @apply invert-0 opacity-100;
+  }
 }
 @layer utilities {
   /* ===== Dashboard */

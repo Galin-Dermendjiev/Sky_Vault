@@ -33,7 +33,7 @@ export default function Sidebar({fullName, avatar, email}: Props) {
         />
       </Link>
 
-      <nav className="sidebar-nav">
+      <nav className="sidebar-nav ">
         <ul className="flex flex-1 flex-col gap-6">
           {navItems.map(({ name, url, icon }) => (
             <Link href={url} key={name} className="lg:w-full">

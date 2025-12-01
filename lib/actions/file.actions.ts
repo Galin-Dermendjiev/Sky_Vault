@@ -4,9 +4,10 @@ import { UploadFileProps } from "@/types";
 import { createAdminClient } from "../appwrite";
 import { InputFile } from "node-appwrite/file";
 import { appwriteConfig } from "../appwrite/config";
-import { ID } from "node-appwrite";
+import { ID, Models, Query } from "node-appwrite";
 import { constructFileUrl, getFileType, parseStringify } from "../utils";
 import { revalidatePath } from "next/cache";
+import { getCurrentUser } from "./user.actions";
 
 
 const handleError = (error: unknown, message: string) => {
@@ -49,5 +50,31 @@ export async function uploadFile({file, ownerId, accountId, path}: UploadFilePro
         return parseStringify(newFile)
     } catch (error) {
         handleError(error, "Failed to upload files")
+    }
+}
+
+function CreateQueries(currentUser: Models.User) {
+    const queries = [
+        Query.or([
+            Query.equal('owner', currentUser.$id),
+            Query.contains('users', currentUser.email)
+        ]
+        )
+    ]
+
+    return queries
+}
+
+export async function getFiles(){
+    const {tables} = await createAdminClient()
+    try{
+        const currentUser = await getCurrentUser()
+        if(!currentUser) throw new Error("User not found")
+        
+        const queries = CreateQueries(currentUser)
+        const files = await tables.listRows({databaseId: appwriteConfig.databaseId, tableId: appwriteConfig.filesTableId, queries})
+        return parseStringify(files)
+    } catch (error){
+        handleError(error, "Failed to get files")
     }
 }
