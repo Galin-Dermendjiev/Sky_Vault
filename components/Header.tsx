@@ -3,12 +3,23 @@ import Search from "./Search";
 import FileUploader from "./FileUploader";
 import { signOutUser } from "@/lib/actions/user.actions";
 
-export default function Header() {
+interface Props {
+  ownerId: string;
+  accountId: string;
+  fullName: string;
+  avatar: string;
+  email: string;
+}
+
+export default function Header({
+  userId,
+  accountId,
+}: {userId: string, accountId: string}) {
   return (
     <header className="header">
       <Search />
       <div className="header-wrapper">
-        <FileUploader />
+        <FileUploader ownerId={userId} accountId={accountId} />
         <form
           action={async () => {
             "use server";
