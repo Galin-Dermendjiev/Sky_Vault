@@ -13,11 +13,12 @@ import { usePathname } from "next/navigation";
 
 interface Props {
   ownerId: string;
+  ownerName: string;
   accountId: string;
   className?: string;
 }
 
-export default function FileUploader({ ownerId, accountId, className }: Props) {
+export default function FileUploader({ ownerId, accountId, ownerName, className }: Props) {
   const path = usePathname()
   const [files, setFiles] = useState<File[]>();
   const onDrop = useCallback(async (acceptedFiles: File[]) => {
@@ -30,7 +31,7 @@ export default function FileUploader({ ownerId, accountId, className }: Props) {
                 is too large. Max file size is 50MB.
             </p>)
         }
-        return uploadFile({file, ownerId, accountId, path}).then((uploadedFile) => {
+        return uploadFile({file, ownerId, ownerName, accountId, path}).then((uploadedFile) => {
             if(uploadedFile) {
                 setFiles((prevFiles) => prevFiles?.filter((f) => f.name !== file.name))
             }
@@ -38,7 +39,7 @@ export default function FileUploader({ ownerId, accountId, className }: Props) {
     })
 
     await Promise.all(uploadPromises)
-  }, [ownerId, accountId, path]);
+  }, [ownerId, ownerName, accountId, path]);
 
   
   const { getRootProps, getInputProps } = useDropzone({ onDrop });

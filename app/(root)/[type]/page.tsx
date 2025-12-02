@@ -1,13 +1,13 @@
+import Card from "@/components/Card";
 import Sort from "@/components/Sort";
 import { getFiles } from "@/lib/actions/file.actions";
-import { SearchParamProps } from "@/types";
-import { Models } from "node-appwrite";
+import { FileRow, SearchParamProps } from "@/types";
 
 export default async function Page({ params }: SearchParamProps) {
   const type = ((await params)?.type as string) || "";
 
   const files = await getFiles();
-console.log(files)
+
   return (
     <div className="page-container">
       <section className="w-full">
@@ -27,7 +27,7 @@ console.log(files)
 
       {files.total > 0 ? (
         <section className="file-list">
-            {/* {files.rows.map((file: Models.Row) => (<h1 key={file.$id} className="h1">{file.name}</h1>))} */}
+            {files.rows.map((file: FileRow) => (<Card key={file.$id} file={file}/>))}
         </section>
       ) : (
         <p className="empty-list">No files uploaded</p>
