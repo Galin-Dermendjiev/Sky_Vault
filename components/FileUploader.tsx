@@ -20,7 +20,7 @@ interface Props {
 
 export default function FileUploader({ ownerId, accountId, ownerName, className }: Props) {
   const path = usePathname()
-  const [files, setFiles] = useState<File[]>();
+  const [files, setFiles] = useState<File[]>([]);
   const onDrop = useCallback(async (acceptedFiles: File[]) => {
     setFiles(acceptedFiles);
     const uploadPromises = acceptedFiles.map(async (file) => {
