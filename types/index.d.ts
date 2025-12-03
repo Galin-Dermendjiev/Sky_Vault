@@ -25,3 +25,9 @@ interface FileRow extends Models.Row {
   owner: string;
   ownerName: string;
 }
+
+export interface ActionType {
+  label: string;
+  icon: string;
+  value: string;
+}

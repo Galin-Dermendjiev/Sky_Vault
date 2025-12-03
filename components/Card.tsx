@@ -3,12 +3,13 @@ import Thumbnail from "./Thumbnail";
 import { FileRow } from "@/types";
 import { convertFileSize } from "@/lib/utils";
 import FormattedDateTime from "./FormattedDateTime";
+import ActionDropdown from "./ActionDropdown";
 
 export default function Card({ file }: { file: FileRow }) {
   return (
     <Link href={file.url} target="_blank" className="file-card">
-      {file.name}
-      <div className="flex justify-between">
+      
+      <div className="flex justify-between ">
         <Thumbnail
           type={file.type}
           extension={file.extension}
@@ -18,7 +19,7 @@ export default function Card({ file }: { file: FileRow }) {
         />
 
         <div className="flex flex-col items-end justify-between">
-          Actions dropdown
+          <ActionDropdown file={file} />
           <p className="body-1">{convertFileSize(file.size)}</p>
         </div>
       </div>
