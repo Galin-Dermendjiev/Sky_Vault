@@ -1,5 +1,14 @@
 import { Models } from "node-appwrite";
 
+declare type FileType = "document" | "image" | "video" | "audio" | "other";
+
+export interface GetFilesProps {
+  types: FileType[];
+  searchText?: string;
+  sort?: string;
+  limit?: number;
+}
+
 export interface UploadFileProps {
   file: File;
   ownerId: string;

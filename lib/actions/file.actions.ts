@@ -3,6 +3,7 @@
 import {
   DeleteFileProps,
   FileRow,
+  GetFilesProps,
   RenameFileProps,
   UpdateFileUsersProps,
   UploadFileProps,
@@ -73,7 +74,7 @@ export async function uploadFile({
   }
 }
 
-function CreateQueries(currentUser: Models.User) {
+function CreateQueries(currentUser: Models.User, types: string[]) {
   const queries = [
     Query.or([
       Query.equal("owner", currentUser.$id),
@@ -81,16 +82,20 @@ function CreateQueries(currentUser: Models.User) {
     ]),
   ];
 
+  if (types.length > 0) {
+    queries.push(Query.equal("type", types));
+  }
+
   return queries;
 }
 
-export async function getFiles() {
+export async function getFiles({ types = [] }: GetFilesProps) {
   const { tables } = await createAdminClient();
   try {
     const currentUser = await getCurrentUser();
     if (!currentUser) throw new Error("User not found");
 
-    const queries = CreateQueries(currentUser);
+    const queries = CreateQueries(currentUser, types);
     const files = await tables.listRows({
       databaseId: appwriteConfig.databaseId,
       tableId: appwriteConfig.filesTableId,
@@ -164,13 +169,15 @@ export async function deleteFile({
       rowId: fileId,
     });
 
-    if(deletedFile){
-      await storage.deleteFile({bucketId: appwriteConfig.bucketId, fileId: bucketFileId})
-
+    if (deletedFile) {
+      await storage.deleteFile({
+        bucketId: appwriteConfig.bucketId,
+        fileId: bucketFileId,
+      });
     }
 
     revalidatePath(path);
-    return parseStringify({status: "success"})
+    return parseStringify({ status: "success" });
   } catch (error) {
     handleError(error, "Failed to rename file");
   }
