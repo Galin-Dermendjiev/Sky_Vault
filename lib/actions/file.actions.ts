@@ -128,7 +128,6 @@ export async function getFiles({
       queries,
     });
 
-    console.log(files);
     return parseStringify(files);
   } catch (error) {
     handleError(error, "Failed to get files");
