@@ -1,6 +1,7 @@
 "use server";
 
 import {
+  DeleteFileProps,
   FileRow,
   RenameFileProps,
   UpdateFileUsersProps,
@@ -144,6 +145,32 @@ export async function updateFileUsers({
 
     revalidatePath(path);
     return parseStringify(updatedFile);
+  } catch (error) {
+    handleError(error, "Failed to rename file");
+  }
+}
+
+export async function deleteFile({
+  fileId,
+  bucketFileId,
+  path,
+}: DeleteFileProps) {
+  const { tables, storage } = await createAdminClient();
+
+  try {
+    const deletedFile = await tables.deleteRow({
+      databaseId: appwriteConfig.databaseId,
+      tableId: appwriteConfig.filesTableId,
+      rowId: fileId,
+    });
+
+    if(deletedFile){
+      await storage.deleteFile({bucketId: appwriteConfig.bucketId, fileId: bucketFileId})
+
+    }
+
+    revalidatePath(path);
+    return parseStringify({status: "success"})
   } catch (error) {
     handleError(error, "Failed to rename file");
   }

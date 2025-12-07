@@ -1,11 +1,11 @@
 import { Models } from "node-appwrite";
 
-export interface UploadFileProps{
-    file: File,
-    ownerId: string,
-    ownerName: string,
-    accountId: string,
-    path: string
+export interface UploadFileProps {
+  file: File;
+  ownerId: string;
+  ownerName: string;
+  accountId: string;
+  path: string;
 }
 
 export interface SearchParamProps {
@@ -42,5 +42,11 @@ export interface RenameFileProps {
 export interface UpdateFileUsersProps {
   fileId: string;
   emails: string[];
+  path: string;
+}
+
+export interface DeleteFileProps {
+  fileId: string;
+  bucketFileId: string;
   path: string;
 }
