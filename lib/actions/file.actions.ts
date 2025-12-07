@@ -1,6 +1,11 @@
 "use server";
 
-import { FileRow, RenameFileProps, UploadFileProps } from "@/types";
+import {
+  FileRow,
+  RenameFileProps,
+  UpdateFileUsersProps,
+  UploadFileProps,
+} from "@/types";
 import { createAdminClient } from "../appwrite";
 import { InputFile } from "node-appwrite/file";
 import { appwriteConfig } from "../appwrite/config";
@@ -112,11 +117,33 @@ export async function renameFile({
       databaseId: appwriteConfig.databaseId,
       tableId: appwriteConfig.filesTableId,
       rowId: fileId,
-      data: {name: newName}
+      data: { name: newName },
     });
 
-    revalidatePath(path)
-    return parseStringify(updatedFile)
+    revalidatePath(path);
+    return parseStringify(updatedFile);
+  } catch (error) {
+    handleError(error, "Failed to rename file");
+  }
+}
+
+export async function updateFileUsers({
+  fileId,
+  emails,
+  path,
+}: UpdateFileUsersProps) {
+  const { tables } = await createAdminClient();
+
+  try {
+    const updatedFile = await tables.updateRow({
+      databaseId: appwriteConfig.databaseId,
+      tableId: appwriteConfig.filesTableId,
+      rowId: fileId,
+      data: { users: emails },
+    });
+
+    revalidatePath(path);
+    return parseStringify(updatedFile);
   } catch (error) {
     handleError(error, "Failed to rename file");
   }

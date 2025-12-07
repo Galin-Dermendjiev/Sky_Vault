@@ -38,3 +38,9 @@ export interface RenameFileProps {
   extension: string;
   path: string;
 }
+
+export interface UpdateFileUsersProps {
+  fileId: string;
+  emails: string[];
+  path: string;
+}
