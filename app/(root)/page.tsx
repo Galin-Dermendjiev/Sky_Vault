@@ -58,7 +58,7 @@ export default async function Home() {
         ) : (
           <ul className="space-y-4">
             {files.rows.map((file: FileRow) => (
-              <li key={file.$id} className="flex justify-between">
+              <Link href={file.url} target="_blank" key={file.$id} className="flex justify-between">
                 <div className="flex gap-3">
                   <Thumbnail
                     type={file.type}
@@ -76,7 +76,7 @@ export default async function Home() {
                   </div>
                 </div>
                 <ActionDropdown file={file} />
-              </li>
+              </Link>
             ))}
           </ul>
         )}
