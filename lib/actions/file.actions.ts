@@ -2,6 +2,8 @@
 
 import {
   DeleteFileProps,
+  FileRow,
+  FileType,
   GetFilesProps,
   RenameFileProps,
   UpdateFileUsersProps,
@@ -205,5 +207,44 @@ export async function deleteFile({
     return parseStringify({ status: "success" });
   } catch (error) {
     handleError(error, "Failed to rename file");
+  }
+}
+
+export async function getTotalSpaceUsed(){
+  try {
+    const currentUser = await getCurrentUser()
+
+    if(!currentUser){
+      return parseStringify({accountId: null, error: "User not found"})
+    }
+
+    const files = await getFiles({})
+
+    const totalSpace = {
+      image: {size: 0, latestDate: ''},
+      document: {size: 0, latestDate: ''},
+      audio: {size: 0, latestDate: ''},
+      video: {size: 0, latestDate: ''},
+      other: {size: 0, latestDate: ''},
+      used: 0,
+      all: 2 * 1024 * 1024 * 1024
+    }
+    
+    files.rows.forEach((file: FileRow) => {
+      const fileType = file.type as FileType
+      totalSpace[fileType].size += file.size
+      totalSpace.used += file.size
+
+      if (
+        !totalSpace[fileType].latestDate ||
+        new Date(file.$updatedAt) > new Date(totalSpace[fileType].latestDate)
+      ) {
+        totalSpace[fileType].latestDate = file.$updatedAt;
+      }
+    });
+
+    return parseStringify(totalSpace)
+  } catch (error) {
+    handleError(error, "Failed to get space used")
   }
 }
