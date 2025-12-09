@@ -3,7 +3,7 @@ import Chart from "@/components/Chart";
 import FormattedDateTime from "@/components/FormattedDateTime";
 import Thumbnail from "@/components/Thumbnail";
 import { getFiles, getTotalSpaceUsed } from "@/lib/actions/file.actions";
-import { convertFileSize, formatDateTime, getUsageSummary } from "@/lib/utils";
+import { convertFileSize, getUsageSummary } from "@/lib/utils";
 import { FileRow } from "@/types";
 import { Separator } from "@radix-ui/react-separator";
 import Image from "next/image";
@@ -17,7 +17,7 @@ export default async function Home() {
   return (
     <div className="dashboard-container p-4 rounded-2xl">
       <section className="flex flex-col gap-4">
-        <Chart />
+        <Chart used={totalSpace.used}/>
 
         <ul className="dashboard-summary-list">
           {usageSummary.map((summary) => (

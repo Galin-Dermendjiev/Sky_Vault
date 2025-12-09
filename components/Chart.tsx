@@ -1,61 +1,75 @@
 "use client";
 
-import { TrendingUp } from "lucide-react"
 import {
   Label,
   PolarGrid,
   PolarRadiusAxis,
   RadialBar,
   RadialBarChart,
-} from "recharts"
+} from "recharts";
+
 import {
   Card,
   CardContent,
-  CardDescription,
   CardFooter,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card"
-import { ChartConfig, ChartContainer } from "@/components/ui/chart"
+} from "@/components/ui/card";
+
+import { ChartConfig, ChartContainer } from "@/components/ui/chart";
+import { calculatePercentage, convertFileSize } from "@/lib/utils";
 
 const chartConfig = {
-  visitors: {
-    label: "Visitors",
+  size: {
+    label: "Size",
   },
-  safari: {
-    label: "Safari",
-    color: "var(--chart-2)",
+  used: {
+    label: "Used",
+    color: "white",
   },
-} satisfies ChartConfig
+} satisfies ChartConfig;
 
-const chartData = [
-  { browser: "safari", visitors: 200, fill: "var(--color-safari)" },
-]
-export default function Chart() {
+export default function Chart({ used = 0 }: { used: number }) {
+  const percentage = calculatePercentage(used)
+
+  // === Arc configuration ===
+  const startAngle = 240; 
+const arcSpan = 300;
+const fillAngle = (percentage / 100) * arcSpan;
+const endAngle = startAngle - fillAngle; // clockwise
+
+  const chartData = [
+    { name: "used", value: percentage, fill: "white" },
+  ];
+
   return (
     <Card className="chart gap-0">
       <CardContent className="flex flex-1 items-center p-0">
-         <ChartContainer
-          config={chartConfig}
-          className="chart-container"
-        >
+        <ChartContainer config={chartConfig} className="chart-container">
           <RadialBarChart
             data={chartData}
-            startAngle={-70}
-            endAngle={250}
+            startAngle={startAngle}
+            endAngle={endAngle}
             innerRadius={80}
             outerRadius={110}
           >
+            {/* Background ring */}
             <PolarGrid
               gridType="circle"
               radialLines={false}
               stroke="none"
-              
               polarRadius={[86, 74]}
             />
-            <RadialBar dataKey="visitors" background cornerRadius={10}  />
+
+            <RadialBar
+              dataKey="value"
+              cornerRadius={10}
+              background
+              isAnimationActive={true}
+              animationDuration={900}
+              animationEasing="ease-out"
+            />
+
             <PolarRadiusAxis tick={false} tickLine={false} axisLine={false}>
-              <Label 
+              <Label
                 content={({ viewBox }) => {
                   if (viewBox && "cx" in viewBox && "cy" in viewBox) {
                     return (
@@ -64,39 +78,37 @@ export default function Chart() {
                         y={viewBox.cy}
                         textAnchor="middle"
                         dominantBaseline="middle"
-                        
                       >
                         <tspan
                           x={viewBox.cx}
                           y={viewBox.cy}
                           className="chart-total-percentage"
                         >
-                          82%
+                          {percentage}%
                         </tspan>
                         <tspan
                           x={viewBox.cx}
-                          y={(viewBox.cy || 0) + 30}
-                          className="fill-white text-xl"
+                          y={(viewBox.cy || 0) + 24}
+                          className="fill-white/70"
                         >
                           Space used
                         </tspan>
                       </text>
-                    )
+                    );
                   }
                 }}
               />
             </PolarRadiusAxis>
           </RadialBarChart>
         </ChartContainer>
-      
-
       </CardContent>
+
       <CardFooter className="chart-details flex flex-col">
         <div className="chart-title">Available Storage</div>
-        <div className="chart-description">82GB / 128 GB</div>
+        <div className="chart-description">
+          {convertFileSize(used)} / 2 GB
+        </div>
       </CardFooter>
     </Card>
   );
 }
-
-       
