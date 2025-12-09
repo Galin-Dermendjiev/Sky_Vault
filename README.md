@@ -1,36 +1,25 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Sky Vault
+# Cloud File Storage Application
 
-## Getting Started
+A cloud-based file storage application for uploading, managing, and sharing files securely. Built with Next.js 16, Appwrite, Tailwind CSS, TypeScript, and ShadCN.
 
-First, run the development server:
+## Features
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+- **File Upload & Download**: Upload and download files of various formats (images, PDFs, MP3, MP4).
+- **File Visualization**: View images, PDFs, MP3, and MP4 files directly in the browser.
+- **File Management**: Rename, delete, and organize your files.
+- **File Sharing**: Share files with other users securely.
+- **OTP Authentication**: Secure login with one-time password (OTP) authentication via Appwrite.
+- **Global Search**: Search files across all categories.
+- **Sorting**: Sort files by name, date, type, and other metadata.
+- **Responsive UI**: Fully responsive design optimized for both desktop and mobile.
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## Tech Stack
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+- **Next.js 16**: React framework for building SSR and statically generated applications.
+- **Appwrite**: Backend-as-a-service for authentication and file storage.
+- **Tailwind CSS**: Utility-first CSS framework for custom styling.
+- **TypeScript**: Static typing for JavaScript.
+- **ShadCN**: Component library for building modern UI components.
+- **OTP Authentication**: One-time password authentication for secure logins.
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
-
-## Learn More
-
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
