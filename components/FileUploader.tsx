@@ -8,7 +8,7 @@ import Image from "next/image";
 import Thumbnail from "./Thumbnail";
 import { uploadFile } from "@/lib/actions/file.actions";
 import { MAX_FILE_SIZE } from "@/constants";
-import { toast } from "sonner"
+import { toast } from "sonner";
 import { usePathname } from "next/navigation";
 
 interface Props {
@@ -18,30 +18,45 @@ interface Props {
   className?: string;
 }
 
-export default function FileUploader({ ownerId, accountId, ownerName, className }: Props) {
-  const path = usePathname()
+export default function FileUploader({
+  ownerId,
+  accountId,
+  ownerName,
+  className,
+}: Props) {
+  const path = usePathname();
   const [files, setFiles] = useState<File[]>([]);
-  const onDrop = useCallback(async (acceptedFiles: File[]) => {
-    setFiles(acceptedFiles);
-    const uploadPromises = acceptedFiles.map(async (file) => {
-        if(file.size > MAX_FILE_SIZE){
-            setFiles((prevFiles) => prevFiles?.filter((f) => f.name !== file.name))
-            return toast.error(<p className="body-2 ">
-                <span className="font-semibold">{file.name} </span>
-                is too large. Max file size is 50MB.
-            </p>)
+  const onDrop = useCallback(
+    async (acceptedFiles: File[]) => {
+      setFiles(acceptedFiles);
+      const uploadPromises = acceptedFiles.map(async (file) => {
+        if (file.size > MAX_FILE_SIZE) {
+          setFiles((prevFiles) =>
+            prevFiles?.filter((f) => f.name !== file.name)
+          );
+          return toast.error(
+            <p className="body-2 ">
+              <span className="font-semibold">{file.name} </span>
+              is too large. Max file size is 50MB.
+            </p>
+          );
         }
-        return uploadFile({file, ownerId, ownerName, accountId, path}).then((uploadedFile) => {
-            if(uploadedFile) {
-                setFiles((prevFiles) => prevFiles?.filter((f) => f.name !== file.name))
+        return uploadFile({ file, ownerId, ownerName, accountId, path }).then(
+          (uploadedFile) => {
+            if (uploadedFile) {
+              setFiles((prevFiles) =>
+                prevFiles?.filter((f) => f.name !== file.name)
+              );
             }
-        })
-    })
+          }
+        );
+      });
 
-    await Promise.all(uploadPromises)
-  }, [ownerId, ownerName, accountId, path]);
+      await Promise.all(uploadPromises);
+    },
+    [ownerId, ownerName, accountId, path]
+  );
 
-  
   const { getRootProps, getInputProps } = useDropzone({ onDrop });
 
   function handleRemoveFile(
@@ -83,13 +98,15 @@ export default function FileUploader({ ownerId, accountId, ownerName, className 
                     url={convertFileToUrl(file)}
                   />
                   <div className="preview-item-name">
-                    {file.name}
-                    <Image
-                      src="/assets/icons/file-loader.gif"
-                      alt="loader"
-                      width={80}
-                      height={26}
-                    />
+                    <div className="flex flex-col">
+                      {file.name}
+                      <Image
+                        src="/assets/icons/file-loader.gif"
+                        alt="loader"
+                        width={80}
+                        height={26}
+                      />
+                    </div>
                   </div>
                 </div>
                 <Image
@@ -106,7 +123,6 @@ export default function FileUploader({ ownerId, accountId, ownerName, className 
           })}
         </ul>
       )}
-      
     </div>
   );
 }
