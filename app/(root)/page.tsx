@@ -10,8 +10,10 @@ import Image from "next/image";
 import Link from "next/link";
 
 export default async function Home() {
-  const files = await getFiles({ limit: 10 });
-  const totalSpace = await getTotalSpaceUsed();
+  const [files, totalSpace] = await Promise.all([
+    getFiles({ limit: 10 }),
+    getTotalSpaceUsed()
+  ])
   const usageSummary = getUsageSummary(totalSpace);
 
   return (

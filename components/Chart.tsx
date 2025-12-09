@@ -8,11 +8,7 @@ import {
   RadialBarChart,
 } from "recharts";
 
-import {
-  Card,
-  CardContent,
-  CardFooter,
-} from "@/components/ui/card";
+import { Card, CardContent, CardFooter } from "@/components/ui/card";
 
 import { ChartConfig, ChartContainer } from "@/components/ui/chart";
 import { calculatePercentage, convertFileSize } from "@/lib/utils";
@@ -28,17 +24,15 @@ const chartConfig = {
 } satisfies ChartConfig;
 
 export default function Chart({ used = 0 }: { used: number }) {
-  const percentage = calculatePercentage(used)
+  const percentage = calculatePercentage(used);
 
   // === Arc configuration ===
-  const startAngle = 240; 
-const arcSpan = 300;
-const fillAngle = (percentage / 100) * arcSpan;
-const endAngle = startAngle - fillAngle; // clockwise
+  const startAngle = 240;
+  const arcSpan = 300;
+  const fillAngle = (percentage / 100) * arcSpan;
+  const endAngle = startAngle - fillAngle; // clockwise
 
-  const chartData = [
-    { name: "used", value: percentage, fill: "white" },
-  ];
+  const chartData = [{ name: "used", value: percentage, fill: "white" }];
 
   return (
     <Card className="chart gap-0">
@@ -105,9 +99,7 @@ const endAngle = startAngle - fillAngle; // clockwise
 
       <CardFooter className="chart-details flex flex-col">
         <div className="chart-title">Available Storage</div>
-        <div className="chart-description">
-          {convertFileSize(used)} / 2 GB
-        </div>
+        <div className="chart-description">{convertFileSize(used)} / 2 GB</div>
       </CardFooter>
     </Card>
   );
