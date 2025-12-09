@@ -1,8 +1,20 @@
+import Chart from "@/components/Chart";
+import { getFiles } from "@/lib/actions/file.actions";
 
-export default function Home() {
+export default async function Home() {
+  const files = await getFiles({limit: 10})
+
   return (
-    <div >
-      <h1 className="text-3xl text-brand">Hello</h1>
+    <div className="dashboard-container">
+      <section className="flex flex-col gap-4">
+          <Chart />
+        
+        <div>dashboard cards</div>
+      </section>
+      <section className="dashboard-recent-files">
+        <h2 className="h2 xl:h2 text-light-100">Recent files uploaded</h2>
+        
+      </section>
     </div>
   );
 }

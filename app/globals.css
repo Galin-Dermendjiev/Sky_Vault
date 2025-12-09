@@ -190,7 +190,7 @@
 @layer utilities {
   /* ===== Dashboard */
   .dashboard-container {
-    @apply mx-auto grid max-w-7xl grid-cols-1 gap-6 md:grid-cols-2 xl:gap-10;
+    @apply mx-auto grid max-w-7xl grid-cols-1 gap-6 md:grid-cols-2 xl:gap-10 bg-light-300;
   }
 
   .dashboard-summary-list {
