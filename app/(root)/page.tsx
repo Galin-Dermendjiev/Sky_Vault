@@ -12,14 +12,14 @@ import Link from "next/link";
 export default async function Home() {
   const [files, totalSpace] = await Promise.all([
     getFiles({ limit: 10 }),
-    getTotalSpaceUsed()
-  ])
+    getTotalSpaceUsed(),
+  ]);
   const usageSummary = getUsageSummary(totalSpace);
 
   return (
     <div className="dashboard-container p-4 rounded-2xl">
       <section className="flex flex-col gap-4">
-        <Chart used={totalSpace.used}/>
+        <Chart used={totalSpace.used} />
 
         <ul className="dashboard-summary-list">
           {usageSummary.map((summary) => (
@@ -43,9 +43,12 @@ export default async function Home() {
                 </div>
 
                 <h5 className="summary-type-title">{summary.title}</h5>
-                <Separator className="bg-light-100"/>
+                <Separator className="bg-light-100" />
                 <p className="block text-center text-light-200">Last update</p>
-                <FormattedDateTime date={summary.latestDate} className="text-center text-light-100"/>                
+                <FormattedDateTime
+                  date={summary.latestDate}
+                  className="text-center text-light-100"
+                />
               </div>
             </Link>
           ))}
@@ -54,19 +57,24 @@ export default async function Home() {
       <section className="dashboard-recent-files h-full!">
         <h2 className="h2 xl:h2 text-light-100 mb-5">Recent files uploaded</h2>
         {files.length === 0 ? (
-          <p>No recent files</p>
+          <p className="empty-list">No recent files</p>
         ) : (
           <ul className="space-y-4">
             {files.rows.map((file: FileRow) => (
-              <Link href={file.url} target="_blank" key={file.$id} className="flex justify-between">
-                <div className="flex gap-3">
+              <Link
+                href={file.url}
+                target="_blank"
+                key={file.$id}
+                className="flex justify-between items-center w-full"
+              >
+                <div className="flex gap-3 flex-1 min-w-0">
                   <Thumbnail
                     type={file.type}
                     extension={file.extension}
                     url={file.url}
                   />
-                  <div className="flex flex-col">
-                    <span className="recent-file-name truncate">
+                  <div className="flex flex-col min-w-0">
+                    <span className="recent-file-name truncate w-full">
                       {file.name}
                     </span>
                     <FormattedDateTime
